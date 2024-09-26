@@ -1,18 +1,13 @@
 package Runners;
-import StepDefs.BaseClass;
-import cucumber.api.java.Before;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import Pages.BasePage;
+import Utils.DriverManager;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
+
+import java.io.IOException;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
@@ -26,4 +21,14 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
         tags = "@sanity"
 )
 public class testRunner {
+    @BeforeClass
+    public static void setup() throws IOException {
+        // Any specific setup logic if needed
+        DriverManager.getDriver(); // Ensure the driver is initialized
+    }
+
+    @AfterClass
+    public static void teardown() {
+        DriverManager.quitDriver(); // Clean up after tests
+    }
 }
