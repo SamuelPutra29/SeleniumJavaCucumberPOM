@@ -1,71 +1,35 @@
 package StepDefs;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
-
-import Pages.AddcustomerPage;
 import Pages.LoginPage;
-import Pages.SearchCustomerPage;
-import cucumber.api.java.Before;
+import Pages.BasePage;
+import Utils.DriverManager;
+import Utils.WebUtils;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import junit.framework.Assert;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.openqa.selenium.By;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 
-public class LoginSteps extends BaseClass {
+import static StepDefs.BaseClass.logger;
+
+@Slf4j
+public class LoginSteps {
+    WebDriver driver = DriverManager.getDriverInstance();
 
     LoginPage loginPage = new LoginPage(driver);
-    @Before
-    public void setup() throws IOException
-    {
-        //Logging
-        logger= Logger.getLogger("nopCommerceSDET");
-        PropertyConfigurator.configure("src/test/resources/Log4j.properties");
-        logger.setLevel(Level.DEBUG);
-
-        //Load properties file
-        configProp= new Properties();
-        FileInputStream configPropfile = new FileInputStream("src/test/resources/config.properties");
-        configProp.load(configPropfile);
-
-        String br=configProp.getProperty("browser"); //getting the browser name from config.properties file
-
-        //Launching browser
-        if (br.equals("firefox")) {
-            System.setProperty("webdriver.gecko.driver",configProp.getProperty("firefoxpath"));
-            driver = new FirefoxDriver();
-        }
-
-        else if (br.equals("chrome")) {
-            System.setProperty("webdriver.chrome.driver",configProp.getProperty("chromepath"));
-            driver = new ChromeDriver();
-        }
-
-        else if (br.equals("ie")) {
-            System.setProperty("webdriver.ie.driver",configProp.getProperty("iepath"));
-            driver = new InternetExplorerDriver();
-        }
-
-    }
+    WebUtils webUtils = new WebUtils();
 
     //Login steps....................
     @Given("User Launch Chrome browser")
     public void user_Launch_Chrome_browser() {
-        logger.info("************* Launching Browser *****************");
-        lp=new LoginPage(driver);
+        log.info("************* Launching Browser *****************");
+        loginPage = new LoginPage(driver); // Initialize Page Object with the driver
     }
+
+
     @When("User opens URL {string}")
     public void user_opens_URL(String url) {
-        logger.info("************* Opening URL  *****************");
+        log.info("************* Opening URL  *****************");
         driver.get(url);
         driver.manage().window().maximize();
     }
@@ -73,6 +37,7 @@ public class LoginSteps extends BaseClass {
 
     @Then("User clicks on New User")
     public void userClicksOnNewUser() {
+        webUtils.scrollDown(driver, 300);
         loginPage.clickNewUser();
     }
 }
