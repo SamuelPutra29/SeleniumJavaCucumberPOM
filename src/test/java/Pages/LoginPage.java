@@ -15,15 +15,18 @@ public class LoginPage {
         PageFactory.initElements(rdriver, this);
     }
 
+    @FindBy(id = "newUser")
+    @CacheLookup
+    WebElement newUserbtn;
+
     @FindBy(id = "Email")
     @CacheLookup
     WebElement txtEmail;
 
     @FindBy(id = "Password")
-    @CacheLookup
     WebElement txtPassword;
 
-    @FindBy(xpath = "//input[@value='Log in']")
+    @FindBy(xpath = "//button[@type='submit' and contains(@class, 'login-button') and text()='Log in']")
     @CacheLookup
     WebElement btnLogin;
 
@@ -31,6 +34,9 @@ public class LoginPage {
     @CacheLookup
     WebElement lnkLogout;
 
+    public void clickNewUser() {
+        newUserbtn.click();
+    }
 
     public void setUserName(String uname) {
         txtEmail.clear();

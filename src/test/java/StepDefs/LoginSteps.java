@@ -22,17 +22,19 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 public class LoginSteps extends BaseClass {
+
+    LoginPage loginPage = new LoginPage(driver);
     @Before
     public void setup() throws IOException
     {
         //Logging
-        logger=Logger.getLogger("nopCommerceSDET");
-        PropertyConfigurator.configure("Log4j.properties");
+        logger= Logger.getLogger("nopCommerceSDET");
+        PropertyConfigurator.configure("src/test/resources/Log4j.properties");
         logger.setLevel(Level.DEBUG);
 
         //Load properties file
         configProp= new Properties();
-        FileInputStream configPropfile = new FileInputStream("config.properties");
+        FileInputStream configPropfile = new FileInputStream("src/test/resources/config.properties");
         configProp.load(configPropfile);
 
         String br=configProp.getProperty("browser"); //getting the browser name from config.properties file
@@ -54,6 +56,28 @@ public class LoginSteps extends BaseClass {
         }
 
     }
+
+    //Login steps....................
+    @Given("User Launch Chrome browser")
+    public void user_Launch_Chrome_browser() {
+        logger.info("************* Launching Browser *****************");
+        lp=new LoginPage(driver);
+    }
+    @When("User opens URL {string}")
+    public void user_opens_URL(String url) {
+        logger.info("************* Opening URL  *****************");
+        driver.get(url);
+        driver.manage().window().maximize();
+    }
+
+
+    @Then("User clicks on New User")
+    public void userClicksOnNewUser() {
+        loginPage.clickNewUser();
+    }
+}
+
+/*
 
 
     //Login steps....................
@@ -220,4 +244,31 @@ public class LoginSteps extends BaseClass {
         boolean status=searchCust.searchCustomerByName("Victoria Terces");
         Assert.assertEquals(true, status);
     }
-}
+
+
+
+  @regression
+  Scenario: Login with Invalid Credentials
+    And User enters Email as "admin@yourstore.com" and Password as "admin"
+    And Click on Login
+    Then Page Title should be "Dashboard / nopCommerce administration"
+    When User click on Log out link
+    Then Page Title should be "Your store. Login"
+    And close browser
+
+  @regression
+  Scenario Outline: Login Data Driven
+    Given User Launch Chrome browser
+    When User opens URL "http://admin-demo.nopcommerce.com/login"
+    And User enters Email as "<email>" and Password as "<password>"
+    And Click on Login
+    Then Page Title should be "Dashboard / nopCommerce administration"
+    When User click on Log out link
+    Then Page Title should be "Your store. Login"
+    And close browser
+
+    Examples:
+      | email                | password |
+      | admin@yourstore.com  | admin    |
+      | admin1@yourstore.com | admin123 |
+ */
